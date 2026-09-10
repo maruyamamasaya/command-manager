@@ -1,0 +1,12 @@
+import { useEffect, useMemo, useState } from 'react';
+import type { CheatSheet } from '../types';
+import { detectTemplateVariables, expandTemplate } from '../utils';
+type Props = { item?: CheatSheet; onClose: () => void; onCopy: (content: string) => Promise<void> };
+export function TemplateCopyDialog({ item, onClose, onCopy }: Props) {
+  const [values, setValues] = useState<Record<string, string>>({}); const [error, setError] = useState(''); const [copying, setCopying] = useState(false); const names = useMemo(() => { if (!item) return []; const detected = detectTemplateVariables(item.content); const positions = new Map(detected.map((name, index) => [name, index])); return detected.sort((a, b) => (item.templateVariables.find((variable) => variable.name === a)?.sortOrder ?? positions.get(a) ?? 0) - (item.templateVariables.find((variable) => variable.name === b)?.sortOrder ?? positions.get(b) ?? 0)); }, [item]);
+  useEffect(() => { if (item) setValues(Object.fromEntries(names.map((name) => [name, item.templateVariables.find((variable) => variable.name === name)?.defaultValue ?? '']))); setError(''); }, [item, names]);
+  if (!item) return null;
+  const currentItem = item;
+  async function submit(event: React.FormEvent) { event.preventDefault(); const missing = names.find((name) => !values[name]?.trim()); if (missing) { setError(`${missing}を入力してください`); return; } setCopying(true); try { await onCopy(expandTemplate(currentItem.content, values)); onClose(); } finally { setCopying(false); } }
+  return <div className="modal-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}><form className="modal template-copy-modal" onSubmit={submit}><h2>変数を入力</h2>{names.map((name, index) => { const metadata = currentItem.templateVariables.find((variable) => variable.name === name); return <label key={name}>{name}{metadata?.description ? <span className="field-description">{metadata.description}</span> : null}<input value={values[name] ?? ''} onChange={(e) => { setValues((current) => ({ ...current, [name]: e.target.value })); setError(''); }} autoFocus={index === 0} /></label>; })}{error ? <p className="inline-error" role="alert">{error}</p> : null}<div className="modal-actions"><button type="button" className="secondary" onClick={onClose}>キャンセル</button><button className="primary" disabled={copying}>{copying ? 'コピー中…' : '生成してコピー'}</button></div></form></div>;
+}

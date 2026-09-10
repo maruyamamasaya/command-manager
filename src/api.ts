@@ -8,6 +8,7 @@ export const api = {
   cheatsheets: (query = '', categoryId?: number) => invoke<CheatSheet[]>('list_cheatsheets', { query, categoryId }),
   save: (input: CheatSheetInput) => invoke<CheatSheet>('save_cheatsheet', { input }),
   remove: (id: number) => invoke<void>('delete_cheatsheet', { id }),
+  removeMany: (ids: number[]) => invoke<number>('delete_cheatsheets', { ids }),
   exportJson: (path: string) => invoke<void>('export_json', { path }),
   importJson: (path: string) => invoke<void>('import_json', { path }),
 };

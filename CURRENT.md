@@ -7,7 +7,9 @@ CheatSheet MVP implemented and verified on Windows.
 ## Current State
 
 - Tauri 2 + React 19 + TypeScript + SQLiteのローカルデスクトップアプリ。
-- カテゴリとCheatSheetの作成・編集・削除、横断検索、コピー、JSON Import/Exportを実装済み。
+- カテゴリとCheatSheetの作成・編集・削除（表示中項目の一括削除を含む）、横断検索、コピー、JSON Import/Exportを実装済み。
+- ダーク／ライトテーマ切替と、80〜140%の表示倍率変更を実装済み。設定はローカルに保持する。
+- `{{VARIABLE_NAME}}` を自動検出する変数付きコマンド、変数メタデータ、入力後コピー、JSONバックアップを実装済み。
 - Windows production buildと実行、SQLite作成を確認済み。
 
 ## Known Issues
