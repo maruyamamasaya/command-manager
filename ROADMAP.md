@@ -2,7 +2,7 @@
 
 ## MVP — Complete
 
-カテゴリ管理、CheatSheet CRUD、横断検索、詳細表示、コピー通知、SQLite永続化、JSON Import/Export、Windows bundle。
+カテゴリ管理、CheatSheet CRUD、横断検索、詳細表示、コピー通知、SQLite永続化、JSON Import/Export、Windows/macOS bundle。
 
 ## Candidate Next Features
 

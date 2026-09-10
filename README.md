@@ -4,7 +4,7 @@
 
 ## 開発
 
-前提: Node.js 20以上、Rust stable、WindowsではVisual Studio Build Tools（Desktop development with C++）。
+前提: Node.js 20以上、Rust stable。WindowsではVisual Studio Build Tools（Desktop development with C++）、macOSではXcode Command Line Toolsが必要です。
 
 ```powershell
 npm install
@@ -13,7 +13,9 @@ npm run tauri dev
 
 検証と配布ビルド: `npm run lint`、`npm run typecheck`、`npm run test`、`npm run build`、`npm run tauri build`。
 
-SQLiteはOSのアプリデータディレクトリ内の `dev.cheatsheet.desktop/cheatsheet.db` に保存されます。Windows向け成果物は `src-tauri/target/release/bundle/` に生成されます。
+macOS向けのUniversalアプリ（Apple Silicon / Intel対応）とDMGだけを作る場合は、Rustの`aarch64-apple-darwin`と`x86_64-apple-darwin` targetを導入してから`npm run build:mac`を実行します。生成されたDMGを開き、`CheatSheet.app`をApplicationsへドラッグすると利用できます。開発者署名を行っていないローカルビルドのため、初回起動時にmacOSに止められた場合は、FinderでアプリをControl＋クリックして「開く」を選択してください。
+
+SQLiteはOSのアプリデータディレクトリ内の `dev.cheatsheet.desktop/cheatsheet.db` に保存されます。成果物は `src-tauri/target/release/bundle/` に生成されます。
 
 ## 構成
 
