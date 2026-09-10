@@ -12,7 +12,7 @@
 
 ## Major Components
 
-- `src/components`: 3ペインUIと編集フォーム。
+- `src/components`: 3ペインUI、Single Command / Command Set編集フォーム、セッション内共有の変数入力。
 - `src/api.ts`: UIとRust command間の境界。将来の同期実装でもUIのデータ契約を維持する。
 - `src-tauri/src/lib.rs`: DB初期化、CRUD、検索、Import/Export。
 - `src-tauri/migrations`: version管理されたschema。

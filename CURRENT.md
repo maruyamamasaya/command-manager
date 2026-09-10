@@ -10,6 +10,7 @@ CheatSheet MVP implemented and verified on Windows.
 - カテゴリとCheatSheetの作成・編集・削除（表示中項目の一括削除を含む）、横断検索、コピー、JSON Import/Exportを実装済み。
 - ダーク／ライトテーマ切替と、80〜140%の表示倍率変更を実装済み。設定はローカルに保持する。
 - `{{VARIABLE_NAME}}` を自動検出する変数付きコマンド、変数メタデータ、入力後コピー、JSONバックアップを実装済み。
+- 複数Stepを順序付きで保存するCommand Set、Step/全体コピー、セット内共有変数、Step検索、JSONバックアップを実装済み。
 - Windows production buildと実行、SQLite作成を確認済み。
 
 ## Known Issues

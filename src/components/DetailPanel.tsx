@@ -1,15 +1,14 @@
-import { Copy, Pencil, Trash2 } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { Copy, Pencil, Settings2, Trash2 } from 'lucide-react';
 import type { CheatSheet } from '../types';
-import { detectTemplateVariables } from '../utils';
-type Props = { item?: CheatSheet; onCopy: (item: CheatSheet) => void; onEdit: (item: CheatSheet) => void; onDelete: (item: CheatSheet) => void };
-export function DetailPanel({ item, onCopy, onEdit, onDelete }: Props) {
-  if (!item) return <aside className="detail empty-detail"><p>項目を選択すると詳細が表示されます</p></aside>;
-  return <aside className="detail">
-    <div className="detail-actions"><button className="secondary" onClick={() => onEdit(item)}><Pencil size={15} />編集</button><button className="danger-text" onClick={() => onDelete(item)}><Trash2 size={15} />削除</button></div>
-    <div className="badges"><span className="category-badge">{item.categoryName}</span>{detectTemplateVariables(item.content).length ? <span className="template-badge">Template · 変数 {detectTemplateVariables(item.content).length}</span> : null}</div><h1>{item.title}</h1><p className="description">{item.description || '説明はありません'}</p>
-    <div className="code-heading"><span>コマンド / 本文</span><button className="copy-button prominent" onClick={() => onCopy(item)}><Copy size={15} />コピー</button></div>
-    <pre><code>{item.content}</code></pre>
-    <div className="tags detail-tags">{item.tags.map((tag) => <span key={tag}>#{tag}</span>)}</div>
-    <p className="timestamp">更新: {new Date(item.updatedAt).toLocaleString('ja-JP')}</p>
-  </aside>;
+import { detectTemplateVariables, detectTemplateVariablesInContents, expandTemplate } from '../utils';
+import { VariableDialog } from './VariableDialog';
+type Props={item?:CheatSheet;onCopySingle:(item:CheatSheet)=>void;onCopyText:(content:string)=>Promise<void>;onEdit:(item:CheatSheet)=>void;onDelete:(item:CheatSheet)=>void};
+type Pending={content?:string;configureOnly?:boolean};
+export function DetailPanel({item,onCopySingle,onCopyText,onEdit,onDelete}:Props){const[values,setValues]=useState<Record<string,string>>({}),[pending,setPending]=useState<Pending>();useEffect(()=>{setValues({});setPending(undefined)},[item?.id]);const names=useMemo(()=>item?.type==='command_set'?detectTemplateVariablesInContents(item.steps.map(s=>s.content)):[],[item]);const orderedNames=useMemo(()=>[...names].sort((a,b)=>(item?.templateVariables.find(v=>v.name===a)?.sortOrder??names.indexOf(a))-(item?.templateVariables.find(v=>v.name===b)?.sortOrder??names.indexOf(b))),[item,names]);const dialogNames=useMemo(()=>pending?.configureOnly?orderedNames:detectTemplateVariables(pending?.content??''),[pending,orderedNames]);if(!item)return <aside className="detail empty-detail"><p>項目を選択すると詳細が表示されます</p></aside>;
+ const requestCopy=(content:string)=>{const needed=detectTemplateVariables(content);if(needed.some(name=>!values[name]?.trim()))setPending({content});else void onCopyText(expandTemplate(content,values))};
+ const allContent=item.steps.map(s=>s.content).join('\n\n');
+ return <aside className="detail"><div className="detail-actions"><button className="secondary" onClick={()=>onEdit(item)}><Pencil size={15}/>編集</button><button className="danger-text" onClick={()=>onDelete(item)}><Trash2 size={15}/>削除</button></div><div className="badges"><span className="category-badge">{item.categoryName}</span>{item.type==='command_set'?<span className="command-set-badge">Command Set · {item.steps.length} steps · {names.length} variables</span>:detectTemplateVariables(item.content).length?<span className="template-badge">Template · 変数 {detectTemplateVariables(item.content).length}</span>:null}</div><h1>{item.title}</h1><p className="description">{item.description||'説明はありません'}</p>
+ {item.type==='single'?<><div className="code-heading"><span>コマンド / 本文</span><button className="copy-button prominent" onClick={()=>onCopySingle(item)}><Copy size={15}/>コピー</button></div><pre><code>{item.content}</code></pre></>:<><div className="set-actions">{names.length?<button className="secondary" onClick={()=>setPending({configureOnly:true})}><Settings2 size={15}/>変数を設定</button>:null}<button className="secondary" onClick={()=>requestCopy(allContent)}><Copy size={15}/>すべてコピー</button></div>{orderedNames.length?<div className="shared-variables">Variables: {orderedNames.join(' · ')}</div>:null}<div className="command-steps">{item.steps.map((step,index)=><section className="command-step" key={step.id??index}><div className="step-number">{index+1}</div><div className="step-body"><div className="step-heading"><h2>{step.title||`Step ${index+1}`}</h2><button className="copy-button prominent" onClick={()=>requestCopy(step.content)}><Copy size={15}/>コピー</button></div>{step.description?<p>{step.description}</p>:null}<pre><code>{step.content}</code></pre></div></section>)}</div></>}
+ <div className="tags detail-tags">{item.tags.map(tag=><span key={tag}>#{tag}</span>)}</div><p className="timestamp">更新: {new Date(item.updatedAt).toLocaleString('ja-JP')}</p><VariableDialog open={!!pending} names={dialogNames} metadata={item.templateVariables} initialValues={values} actionLabel={pending?.configureOnly?'設定':'生成してコピー'} onClose={()=>setPending(undefined)} onSubmit={async next=>{setValues(current=>({...current,...next}));if(pending?.content)await onCopyText(expandTemplate(pending.content,next));setPending(undefined)}}/></aside>;
 }
