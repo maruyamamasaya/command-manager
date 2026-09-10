@@ -1,27 +1,19 @@
 # Current
 
-この文書は現在地だけを示します。経緯はGit history、重要判断はADRへ残し、完了履歴を蓄積しません。
-
 ## Current Phase
 
-Starter / Project not initialized
+CheatSheet MVP implemented and verified on Windows.
 
 ## Current State
 
-プロジェクト固有情報は未初期化で、アプリケーションコードは未実装です。
-
-## Working
-
-- Documentation starter is available.
-
-## In Progress
-
-- None.
+- Tauri 2 + React 19 + TypeScript + SQLiteのローカルデスクトップアプリ。
+- カテゴリとCheatSheetの作成・編集・削除、横断検索、コピー、JSON Import/Exportを実装済み。
+- Windows production buildと実行、SQLite作成を確認済み。
 
 ## Known Issues
 
-- Project purpose, scope, and technology stack are undecided.
+- 自動化されたTauri UI E2Eは未整備。主要UI操作は手動確認対象。
 
 ## Immediate Next
 
-- コピー後、READMEの初期化手順に従い、人間のレビューを受ける。
+- MVPを実利用し、検索性と入力フローのフィードバックを収集する。

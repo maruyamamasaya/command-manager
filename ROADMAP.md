@@ -1,19 +1,9 @@
 # Roadmap
 
-開発の方向と優先順位を共有する正本です。細かな作業、担当、日々の進捗を管理するタスク一覧にはしません。
+## MVP — Complete
 
-## Now
+カテゴリ管理、CheatSheet CRUD、横断検索、詳細表示、コピー通知、SQLite永続化、JSON Import/Export、Windows bundle。
 
-- プロジェクトの目的と初期設計を定義し、人間の合意を得る。
+## Candidate Next Features
 
-## Next
-
-- 初期化後に定義する。
-
-## Later
-
-- 必要になった段階で定義する。
-
-## Deferred / Won't Do
-
-- 未定。理由が将来重要になる場合はADRへリンクする。
+実利用の優先度を確認してから、お気に入り、最近使用、使用回数、タスクトレイ、グローバルショートカット、小型検索ウィンドウ、CSV、任意の同期adapter、AI検索を検討する。同期を追加してもSQLiteをローカル正本として維持する。

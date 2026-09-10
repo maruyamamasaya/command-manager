@@ -1,43 +1,18 @@
 # Data Model
 
-永続化方式と永続化モデルの正本です。業務上の意味は`DOMAIN.md`、システム全体の構造は`ARCHITECTURE.md`へ記録します。永続化が不要なプロジェクトでは、**Persistence Strategy: Not applicable**と理由を記録し、残りを無理に埋めません。
-
 ## Persistence Strategy
 
-未定。
+OSのアプリデータディレクトリにある単一SQLiteファイル。起動時に冪等migrationを適用する。
 
-## Entities
+## Tables
 
-未定。
+- `categories(id, name UNIQUE NOCASE, sort_order, created_at)`
+- `cheatsheets(id, category_id, title, description, content, created_at, updated_at)`
+- `tags(id, name UNIQUE NOCASE)`
+- `cheatsheet_tags(cheatsheet_id, tag_id)`
 
-## Tables / Collections
+`categories 1:N cheatsheets`、`cheatsheets N:M tags`。外部キーを有効化し、CheatSheet削除時は中間行をcascade削除する。使用中カテゴリの削除はrestrictする。
 
-未定。
+## Lifecycle and Migration
 
-## Primary Keys
-
-未定。
-
-## Foreign Keys
-
-未定。
-
-## Relations
-
-未定。
-
-## Ownership
-
-未定。
-
-## Lifecycle
-
-未定。
-
-## Retention
-
-未定。
-
-## Migration Notes
-
-未定。確立した移行方針と互換性上の注意だけを記録します。
+CheatSheet更新では`updated_at`を更新する。孤立タグは削除時に清掃する。schema変更は`src-tauri/migrations`へ順序付きSQLとして追加する。

@@ -1,33 +1,30 @@
 # Architecture
 
-現在採用しているシステム構造の正本です。責務、境界、主要なデータフロー、外部依存、配置と制約を書きます。業務ルール、永続化の詳細、候補技術の調査記録、将来案はそれぞれの正本へ記録します。
-
-Starterではアーキテクチャを決定しません。技術スタックの決定後に更新してください。詳細がこの文書の簡潔さを損なう場合だけ`docs/architecture/`を作り、ここは全体要約と索引に保ちます。
-
 ## System Overview
 
-未定。
+単一プロセスのTauriデスクトップアプリ。React UIは型付きTauri commandを呼び、Rust層だけがSQLiteとローカルJSONファイルへアクセスする。
 
 ## Technology Stack
 
-未定。
+- UI: React 19、TypeScript、Vite
+- Desktop: Tauri 2 / Rust
+- Persistence: bundled SQLite（rusqlite）
 
 ## Major Components
 
-未定。
+- `src/components`: 3ペインUIと編集フォーム。
+- `src/api.ts`: UIとRust command間の境界。将来の同期実装でもUIのデータ契約を維持する。
+- `src-tauri/src/lib.rs`: DB初期化、CRUD、検索、Import/Export。
+- `src-tauri/migrations`: version管理されたschema。
 
 ## Data Flow
 
-未定。
+ユーザー操作 → React → Tauri IPC → Rust command → SQLite。コピーだけはWebViewのClipboard APIを使用する。Import/Exportはユーザーがファイルダイアログで明示選択したパスだけを処理する。
 
 ## External Services
 
-未定。
-
-## Deployment
-
-未定。
+なし。実行時ネットワーク通信は不要。
 
 ## Key Constraints
 
-未定。
+保存本文は表示・検索・コピー専用で実行しない。SQLiteが正本。OS固有処理はTauri境界へ閉じ込める。
